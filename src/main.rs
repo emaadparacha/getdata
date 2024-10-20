@@ -34,8 +34,12 @@ fn main() {
 
     println!("Samples per frame for lon: {:?}", samples_per_frame);
 
+
     // Total number of samples
     let total_samples: usize = lon_frames as usize * samples_per_frame as usize;
+
+    // Print
+    println!("Total samples: {:?}", total_samples);
 
     // Allocate space for Lon data
     let mut lon_data: Vec<f64> = vec![0.0; total_samples];
