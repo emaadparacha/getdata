@@ -10,6 +10,21 @@ pub struct DirFile {
     pub dirfile_open: *mut DIRFILE,
 }
 
+// Enum to store the data of a field in a DirFile
+pub enum FieldData {
+    Uint8(Vec<u8>),
+    Int8(Vec<i8>),
+    Uint16(Vec<u16>),
+    Int16(Vec<i16>),
+    Uint32(Vec<u32>),
+    Int32(Vec<i32>),
+    Uint64(Vec<u64>),
+    Int64(Vec<i64>),
+    Float32(Vec<f32>),
+    Float64(Vec<f64>),
+    String(Vec<String>),
+}
+
 impl DirFile {
 
     // Function to create a new DirFile instance from a path
@@ -47,7 +62,7 @@ impl DirFile {
     }
 
     // Function to get the data of a field in a DirFile
-    pub fn get_data(&self, field: &str) -> Vec<Box<dyn Any>> {
+    pub fn get_data(&self, field: &str) -> Vec<FieldData> {
         let field_type = self.field_type(field);
         let nframes = self.nframes();
         let samples_per_frame = self.spf(field);
@@ -72,7 +87,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+                vec![FieldData::Uint8(data)]
             }
             gd_type_t_GD_INT8 => {
                 let mut data = vec![0i8; total_samples as usize];
@@ -88,7 +103,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+                vec![FieldData::Int8(data)]
             }
             gd_type_t_GD_UINT16 => {
                 let mut data = vec![0u16; total_samples as usize];
@@ -104,7 +119,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+                vec![FieldData::Uint16(data)]
             }
             gd_type_t_GD_INT16 => {
                 let mut data = vec![0i16; total_samples as usize];
@@ -120,7 +135,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+                vec![FieldData::Int16(data)]
             }
             gd_type_t_GD_UINT32 => {
                 let mut data = vec![0u32; total_samples as usize];
@@ -136,7 +151,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+                vec![FieldData::Uint32(data)]
             }
             gd_type_t_GD_INT32 => {
                 let mut data = vec![0i32; total_samples as usize];
@@ -152,7 +167,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+                vec![FieldData::Int32(data)]
             }
             gd_type_t_GD_UINT64 => {
                 let mut data = vec![0u64; total_samples as usize];
@@ -168,7 +183,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+                vec![FieldData::Uint64(data)]
             }
             gd_type_t_GD_INT64 => {
                 let mut data = vec![0i64; total_samples as usize];
@@ -184,7 +199,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+                vec![FieldData::Int64(data)]
             }
             gd_type_t_GD_FLOAT32 => {
                 let mut data = vec![0.0f32; total_samples as usize];
@@ -200,7 +215,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+                vec![FieldData::Float32(data)]
             }
             gd_type_t_GD_FLOAT64 => {
                 let mut data = vec![0.0f64; total_samples as usize];
@@ -216,10 +231,10 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+                vec![FieldData::Float64(data)]
             }
             gd_type_t_GD_STRING => {
-                // Handle string data accordingly, may need adjustment for your specific needs
+                // Handle string data accordingly
                 let mut data = vec![CString::new("").unwrap(); total_samples as usize];
                 unsafe {
                     gd_getdata(
@@ -233,8 +248,10 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                let data: Vec<String> = data.into_iter().map(|c| c.into_string().unwrap()).collect();
-                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+                let data: Vec<String> = data.into_iter()
+                    .map(|c| c.into_string().unwrap())
+                    .collect();
+                vec![FieldData::String(data)]
             }
             _ => Vec::new(), // Handle unknown types
         }
