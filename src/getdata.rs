@@ -1,3 +1,6 @@
+// Case warnings
+#![allow(non_upper_case_globals)]
+
 // getdata Bindings
 use super::getdata_bindings::*;
 use std::ffi::CString;
@@ -6,9 +9,6 @@ use std::any::Any;
 pub struct DirFile {
     pub dirfile_open: *mut DIRFILE,
 }
-
-// Case warnings
-#![allow(non_upper_case_globals)]
 
 impl DirFile {
 
