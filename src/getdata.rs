@@ -45,7 +45,7 @@ impl DirFile {
         unsafe { gd_native_type(self.dirfile_open, field_code_ptr) }
     }
 
-    // Function to get the data of a field in a DirFile and return as Vec<f64>
+    // Function to get the data of a field in a DirFile and return as Vec<f64> 
     pub fn get_data(&self, field: &str) -> Vec<f64> {
         let field_type = self.field_type(field);
         let nframes = self.nframes();
