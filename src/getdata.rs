@@ -11,6 +11,7 @@ pub struct DirFile {
 }
 
 // Enum to store the data of a field in a DirFile
+#[derive(Debug)]
 pub enum FieldData {
     Uint8(Vec<u8>),
     Int8(Vec<i8>),
