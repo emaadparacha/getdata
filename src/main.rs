@@ -7,7 +7,6 @@ use std::ffi::CString;
 use std::ffi::CStr;
 
 fn main() {
-    println!("Hello, world!");
 
     let dirfile = CString::new("/data/flights/superbit_2023/timestreams/master_2023-05-03-07-24-30")
         .expect("CString::new failed");
@@ -33,7 +32,6 @@ fn main() {
     let samples_per_frame = unsafe { gd_spf(dirfile_open, lon_code_ptr) };
 
     println!("Samples per frame for lon: {:?}", samples_per_frame);
-
 
     // Total number of samples
     let total_samples: usize = lon_frames as usize * samples_per_frame as usize;
