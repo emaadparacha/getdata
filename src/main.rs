@@ -1,7 +1,6 @@
 // getdata library
 mod getdata;
 use getdata::DirFile;
-use getdata::FieldData;
 mod getdata_bindings; // Declare the bindings module
 
 fn main() {
@@ -27,90 +26,35 @@ fn main() {
 
     // Get the data of the field "lon"
     let lon_data = dirfile.get_data("lon");
+    // Print the size
+    println!("lon_data size: {:?}", lon_data.len());
 
-    // Match on the FieldData type to get the underlying data
-    match lon_data[0] {  // Access the first element in the vector
-        FieldData::Uint8(data) => {
-            println!("lon_data size: {:?}", data.len());
-            // Print the last 15 elements of the lon_data vector
-            let to_print = data.iter().skip(data.len().saturating_sub(15));
-            for (i, value) in to_print.enumerate() {
-                println!("lon_data[{}]: {:?}", i + data.len() - 15, value);
-            }
-        }
-        FieldData::Int8(data) => {
-            println!("lon_data size: {:?}", data.len());
-            let to_print = data.iter().skip(data.len().saturating_sub(15));
-            for (i, value) in to_print.enumerate() {
-                println!("lon_data[{}]: {:?}", i + data.len() - 15, value);
-            }
-        }
-        FieldData::Uint16(data) => {
-            println!("lon_data size: {:?}", data.len());
-            let to_print = data.iter().skip(data.len().saturating_sub(15));
-            for (i, value) in to_print.enumerate() {
-                println!("lon_data[{}]: {:?}", i + data.len() - 15, value);
-            }
-        }
-        FieldData::Int16(data) => {
-            println!("lon_data size: {:?}", data.len());
-            let to_print = data.iter().skip(data.len().saturating_sub(15));
-            for (i, value) in to_print.enumerate() {
-                println!("lon_data[{}]: {:?}", i + data.len() - 15, value);
-            }
-        }
-        FieldData::Uint32(data) => {
-            println!("lon_data size: {:?}", data.len());
-            let to_print = data.iter().skip(data.len().saturating_sub(15));
-            for (i, value) in to_print.enumerate() {
-                println!("lon_data[{}]: {:?}", i + data.len() - 15, value);
-            }
-        }
-        FieldData::Int32(data) => {
-            println!("lon_data size: {:?}", data.len());
-            let to_print = data.iter().skip(data.len().saturating_sub(15));
-            for (i, value) in to_print.enumerate() {
-                println!("lon_data[{}]: {:?}", i + data.len() - 15, value);
-            }
-        }
-        FieldData::Uint64(data) => {
-            println!("lon_data size: {:?}", data.len());
-            let to_print = data.iter().skip(data.len().saturating_sub(15));
-            for (i, value) in to_print.enumerate() {
-                println!("lon_data[{}]: {:?}", i + data.len() - 15, value);
-            }
-        }
-        FieldData::Int64(data) => {
-            println!("lon_data size: {:?}", data.len());
-            let to_print = data.iter().skip(data.len().saturating_sub(15));
-            for (i, value) in to_print.enumerate() {
-                println!("lon_data[{}]: {:?}", i + data.len() - 15, value);
-            }
-        }
-        FieldData::Float32(data) => {
-            println!("lon_data size: {:?}", data.len());
-            let to_print = data.iter().skip(data.len().saturating_sub(15));
-            for (i, value) in to_print.enumerate() {
-                println!("lon_data[{}]: {:?}", i + data.len() - 15, value);
-            }
-        }
-        FieldData::Float64(data) => {
-            println!("lon_data size: {:?}", data.len());
-            let to_print = data.iter().skip(data.len().saturating_sub(15));
-            for (i, value) in to_print.enumerate() {
-                println!("lon_data[{}]: {:?}", i + data.len() - 15, value);
-            }
-        }
-        FieldData::String(data) => {
-            println!("lon_data size: {:?}", data.len());
-            let to_print = data.iter().skip(data.len().saturating_sub(15));
-            for (i, value) in to_print.enumerate() {
-                println!("lon_data[{}]: {:?}", i + data.len() - 15, value);
-            }
-        }
-        _ => {
-            println!("Unexpected data type for 'lon'");
-        }
+    // Print the last 15 elements of the vector (or as many as available)
+    let to_print = lon_data.iter().skip(lon_data.len() - 15);
+    for (i, value) in to_print.enumerate() {
+        println!("lon_data[{}]: {:?}", i + lon_data.len() - 15, value);
+    }
+
+    // Get data of the field "lat"
+    let lat_data = dirfile.get_data("lat");
+    // Print the size
+    println!("lat_data size: {:?}", lat_data.len());
+
+    // Print the last 15 elements of the vector (or as many as available)
+    let to_print = lat_data.iter().skip(lat_data.len() - 15);
+    for (i, value) in to_print.enumerate() {
+        println!("lat_data[{}]: {:?}", i + lat_data.len() - 15, value);
+    }
+
+    // Get the data of the field "file_chunk_downlink"
+    let file_chunk_downlink_data = dirfile.get_data("file_chunk_downlink");
+    // Print the size
+    println!("file_chunk_downlink_data size: {:?}", file_chunk_downlink_data.len());
+
+    // Print the last 15 elements of the vector (or as many as available)
+    let to_print = file_chunk_downlink_data.iter().skip(file_chunk_downlink_data.len() - 15);
+    for (i, value) in to_print.enumerate() {
+        println!("file_chunk_downlink_data[{}]: {:?}", i + file_chunk_downlink_data.len() - 15, value);
     }
 
     // Old Code
