@@ -29,15 +29,23 @@ fn main() {
     println!("nfields: {:?}", nfields);
     println!("lon_type: {:?}", lon_type);
 
+    // Get the number of frames in the field "lon"
+    let lon_frames = unsafe { gd_nframes(dirfile_open) };
+
+    println!("lon_frames: {:?}", lon_frames);
+
+    // Exit program here
+    return;
+
     // Allocate space for Lon data
     let mut lon_data: Vec<f64> = vec![0.0; 100*100];
 
-    // Get all the data of the field "period_fsc1" and store it in the vector
+    // Get all the data of the field "lon" and store it in the vector
     let lon_data_size = unsafe {
         gd_getdata(
             dirfile_open,
             lon_code_ptr,
-            1,
+            0,
             1,
             100,
             100,
