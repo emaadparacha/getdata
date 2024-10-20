@@ -52,7 +52,7 @@ fn main() {
             0,
             0,
             lon_frames as usize,
-            total_samples,
+            samples_per_frame as usize,
             gd_type_t_GD_FLOAT64, // Use GD_FLOAT64 to match the f64 data type
             lon_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
         )
