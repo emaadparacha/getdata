@@ -71,7 +71,7 @@ impl DirFile {
                         raw_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                raw_data.iter().map(|&v| v as f64).collect();
+                raw_data.iter().map(|&v| v as f64).collect()
             }
             gd_type_t_GD_INT8 => {
                 let mut raw_data = vec![0i8; total_samples as usize];
@@ -87,7 +87,7 @@ impl DirFile {
                         raw_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                raw_data.iter().map(|&v| v as f64).collect();
+                raw_data.iter().map(|&v| v as f64).collect()
             }
             gd_type_t_GD_UINT16 => {
                 let mut raw_data = vec![0u16; total_samples as usize];
@@ -103,7 +103,7 @@ impl DirFile {
                         raw_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                raw_data.iter().map(|&v| v as f64).collect();
+                raw_data.iter().map(|&v| v as f64).collect()
             }
             gd_type_t_GD_INT16 => {
                 let mut raw_data = vec![0i16; total_samples as usize];
@@ -119,7 +119,7 @@ impl DirFile {
                         raw_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                raw_data.iter().map(|&v| v as f64).collect();
+                raw_data.iter().map(|&v| v as f64).collect()
             }
             gd_type_t_GD_UINT32 => {
                 let mut raw_data = vec![0u32; total_samples as usize];
@@ -135,7 +135,7 @@ impl DirFile {
                         raw_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                raw_data.iter().map(|&v| v as f64).collect();
+                raw_data.iter().map(|&v| v as f64).collect()
             }
             gd_type_t_GD_INT32 => {
                 let mut raw_data = vec![0i32; total_samples as usize];
@@ -151,7 +151,7 @@ impl DirFile {
                         raw_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                raw_data.iter().map(|&v| v as f64).collect();
+                raw_data.iter().map(|&v| v as f64).collect()
             }
             gd_type_t_GD_UINT64 => {
                 let mut raw_data = vec![0u64; total_samples as usize];
@@ -167,7 +167,7 @@ impl DirFile {
                         raw_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                raw_data.iter().map(|&v| v as f64).collect();
+                raw_data.iter().map(|&v| v as f64).collect()
             }
             gd_type_t_GD_INT64 => {
                 let mut raw_data = vec![0i64; total_samples as usize];
@@ -183,7 +183,7 @@ impl DirFile {
                         raw_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                raw_data.iter().map(|&v| v as f64).collect();
+                raw_data.iter().map(|&v| v as f64).collect()
             }
             gd_type_t_GD_FLOAT32 => {
                 let mut raw_data = vec![0.0f32; total_samples as usize];
@@ -199,7 +199,7 @@ impl DirFile {
                         raw_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                raw_data.iter().map(|&v| v as f64).collect();
+                raw_data.iter().map(|&v| v as f64).collect()
             }
             gd_type_t_GD_FLOAT64 => {
                 let mut raw_data = vec![0.0f64; total_samples as usize];
@@ -215,7 +215,7 @@ impl DirFile {
                         raw_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                raw_data; // Already a Vec<f64>
+                raw_data // Already a Vec<f64>
             }
             gd_type_t_GD_STRING => {
                 // Handle string data accordingly
@@ -235,12 +235,12 @@ impl DirFile {
                 raw_data.into_iter()
                     .filter_map(|c| c.into_string().ok())
                     .map(|s| s.parse::<f64>().unwrap_or(0.0)) // Example conversion
-                    .collect();
+                    .collect()
             }
             _ => {
                 // Handle unknown types or return an empty vector
                 println!("Unknown field type: {}", field_type);
-                Vec::new();
+                Vec::new()
             }
         };
 
