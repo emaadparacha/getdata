@@ -68,8 +68,6 @@ fn main() {
     }
 
 
-
-
     // Old Code
     // let dirfile = CString::new("/data/flights/superbit_2023/timestreams/master_2023-05-03-07-24-30")
     //     .expect("CString::new failed");
