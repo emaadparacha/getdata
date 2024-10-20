@@ -53,13 +53,17 @@ impl DirFile {
         let samples_per_frame = self.spf(field);
         let total_samples = nframes * (samples_per_frame as i64);
 
+        // Bind the CString to a variable
+        let field = CString::new(field).expect("CString::new failed");
+        let field_code_ptr = field.as_ptr(); // Get the pointer to the CString
+
         match field_type {
             gd_type_t_GD_UINT8 => {
                 let mut data = vec![0u8; total_samples as usize];
                 unsafe {
                     gd_getdata(
                         self.dirfile_open,
-                        CString::new(field).unwrap().as_ptr(),
+                        field_code_ptr,
                         0,
                         0,
                         nframes as usize,
@@ -75,7 +79,7 @@ impl DirFile {
                 unsafe {
                     gd_getdata(
                         self.dirfile_open,
-                        CString::new(field).unwrap().as_ptr(),
+                        field_code_ptr,
                         0,
                         0,
                         nframes as usize,
@@ -91,7 +95,7 @@ impl DirFile {
                 unsafe {
                     gd_getdata(
                         self.dirfile_open,
-                        CString::new(field).unwrap().as_ptr(),
+                        field_code_ptr,
                         0,
                         0,
                         nframes as usize,
@@ -107,7 +111,7 @@ impl DirFile {
                 unsafe {
                     gd_getdata(
                         self.dirfile_open,
-                        CString::new(field).unwrap().as_ptr(),
+                        field_code_ptr,
                         0,
                         0,
                         nframes as usize,
@@ -123,7 +127,7 @@ impl DirFile {
                 unsafe {
                     gd_getdata(
                         self.dirfile_open,
-                        CString::new(field).unwrap().as_ptr(),
+                        field_code_ptr,
                         0,
                         0,
                         nframes as usize,
@@ -139,7 +143,7 @@ impl DirFile {
                 unsafe {
                     gd_getdata(
                         self.dirfile_open,
-                        CString::new(field).unwrap().as_ptr(),
+                        field_code_ptr,
                         0,
                         0,
                         nframes as usize,
@@ -155,7 +159,7 @@ impl DirFile {
                 unsafe {
                     gd_getdata(
                         self.dirfile_open,
-                        CString::new(field).unwrap().as_ptr(),
+                        field_code_ptr,
                         0,
                         0,
                         nframes as usize,
@@ -171,7 +175,7 @@ impl DirFile {
                 unsafe {
                     gd_getdata(
                         self.dirfile_open,
-                        CString::new(field).unwrap().as_ptr(),
+                        field_code_ptr,
                         0,
                         0,
                         nframes as usize,
@@ -187,7 +191,7 @@ impl DirFile {
                 unsafe {
                     gd_getdata(
                         self.dirfile_open,
-                        CString::new(field).unwrap().as_ptr(),
+                        field_code_ptr,
                         0,
                         0,
                         nframes as usize,
@@ -203,7 +207,7 @@ impl DirFile {
                 unsafe {
                     gd_getdata(
                         self.dirfile_open,
-                        CString::new(field).unwrap().as_ptr(),
+                        field_code_ptr,
                         0,
                         0,
                         nframes as usize,
@@ -220,7 +224,7 @@ impl DirFile {
                 unsafe {
                     gd_getdata(
                         self.dirfile_open,
-                        CString::new(field).unwrap().as_ptr(),
+                        field_code_ptr,
                         0,
                         0,
                         nframes as usize,
