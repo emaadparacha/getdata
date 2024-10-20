@@ -4,7 +4,6 @@
 // getdata Bindings
 use super::getdata_bindings::*;
 use std::ffi::CString;
-use std::any::Any;
 
 pub struct DirFile {
     pub dirfile_open: *mut DIRFILE,
