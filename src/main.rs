@@ -85,10 +85,10 @@ fn main() {
 
             // Convert the C string to a Rust string
             let field_name = unsafe { CStr::from_ptr(field_ptr) };
-            match field_name.to_str() {
-                Ok(name) => println!("Field {}: {}", index, name),
-                Err(e) => eprintln!("Failed to convert field name: {}", e),
-            }
+            //match field_name.to_str() {
+               // Ok(name) => println!("Field {}: {}", index, name),
+               // Err(e) => eprintln!("Failed to convert field name: {}", e),
+           // }
 
             index += 1;
         }
