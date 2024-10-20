@@ -132,6 +132,15 @@ fn main() {
     // Print size of lon_data
     println!("lon_data_size: {:?}", lon_data_size);
 
+    // Get the type of the field "lon"
+    let lon_type = unsafe { gd_native_type(dirfile_open, lon_code_ptr) };
+
+    // Print the type of the field "lon"
+    println!("lon_type: {:?}", lon_type);
+
+    // Print the value of gd_type_t_GD_FLOAT64
+    println!("gd_type_t_GD_FLOAT64: {:?}", gd_type_t_GD_FLOAT64);
+
 
     // Also get the list of fields
     let field_list = unsafe { gd_field_list(dirfile_open) };
