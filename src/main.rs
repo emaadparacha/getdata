@@ -1,6 +1,6 @@
 // getdata library
-use getdata::*;
-mod getdata;
+use getdata_bindings::*;
+mod getdata_bindings;
 
 // CString
 use std::ffi::CString;
