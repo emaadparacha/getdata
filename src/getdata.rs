@@ -63,7 +63,7 @@ impl DirFile {
     }
 
     // Function to get the data of a field in a DirFile
-    pub fn get_data(&self, field: &str) -> Vec<FieldData> {
+    pub fn get_data(&self, field: &str) -> FieldData {
         let field_type = self.field_type(field);
         let nframes = self.nframes();
         let samples_per_frame = self.spf(field);
@@ -88,7 +88,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                vec![FieldData::Uint8(data)]
+                FieldData::Uint8(data)
             }
             gd_type_t_GD_INT8 => {
                 let mut data = vec![0i8; total_samples as usize];
@@ -104,7 +104,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                vec![FieldData::Int8(data)]
+                FieldData::Int8(data)
             }
             gd_type_t_GD_UINT16 => {
                 let mut data = vec![0u16; total_samples as usize];
@@ -120,7 +120,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                vec![FieldData::Uint16(data)]
+                FieldData::Uint16(data)
             }
             gd_type_t_GD_INT16 => {
                 let mut data = vec![0i16; total_samples as usize];
@@ -136,7 +136,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                vec![FieldData::Int16(data)]
+                FieldData::Int16(data)
             }
             gd_type_t_GD_UINT32 => {
                 let mut data = vec![0u32; total_samples as usize];
@@ -152,7 +152,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                vec![FieldData::Uint32(data)]
+                FieldData::Uint32(data)
             }
             gd_type_t_GD_INT32 => {
                 let mut data = vec![0i32; total_samples as usize];
@@ -168,7 +168,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                vec![FieldData::Int32(data)]
+                FieldData::Int32(data)
             }
             gd_type_t_GD_UINT64 => {
                 let mut data = vec![0u64; total_samples as usize];
@@ -184,7 +184,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                vec![FieldData::Uint64(data)]
+                FieldData::Uint64(data)
             }
             gd_type_t_GD_INT64 => {
                 let mut data = vec![0i64; total_samples as usize];
@@ -200,7 +200,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                vec![FieldData::Int64(data)]
+                FieldData::Int64(data)
             }
             gd_type_t_GD_FLOAT32 => {
                 let mut data = vec![0.0f32; total_samples as usize];
@@ -216,7 +216,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                vec![FieldData::Float32(data)]
+                FieldData::Float32(data)
             }
             gd_type_t_GD_FLOAT64 => {
                 let mut data = vec![0.0f64; total_samples as usize];
@@ -232,7 +232,7 @@ impl DirFile {
                         data.as_mut_ptr() as *mut ::std::os::raw::c_void,
                     );
                 }
-                vec![FieldData::Float64(data)]
+                FieldData::Float64(data)
             }
             gd_type_t_GD_STRING => {
                 // Handle string data accordingly
@@ -252,9 +252,9 @@ impl DirFile {
                 let data: Vec<String> = data.into_iter()
                     .map(|c| c.into_string().unwrap())
                     .collect();
-                vec![FieldData::String(data)]
+                FieldData::String(data)
             }
-            _ => Vec::new(), // Handle unknown types
+            _ => FieldData::Uint8(vec![]), // Return an empty vector if the type is not recognized
         }
     }
 
