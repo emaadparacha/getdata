@@ -29,16 +29,6 @@ fn main() {
     // Print the size
     println!("lon_data size: {:?}", lon_data.len());
 
-    // Get data of the field "lat"
-    let lat_data = dirfile.get_data("lat");
-    // Print the size
-    println!("lat_data size: {:?}", lat_data.len());
-
-    // Get the data of the field "file_chunk_downlink"
-    let file_chunk_downlink_data = dirfile.get_data("file_chunk_downlink");
-    // Print the size
-    println!("file_chunk_downlink_data size: {:?}", file_chunk_downlink_data.len());
-
     // Do the same for the field "cent_est_x_fsc2"
     let cent_est_x_fsc2_data = dirfile.get_data("cent_est_x_fsc2");
     // Print the size
