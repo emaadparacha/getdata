@@ -1,6 +1,7 @@
 // getdata library
 mod getdata;
 use getdata::DirFile;
+use getdata::FieldData;
 mod getdata_bindings; // Declare the bindings module
 
 fn main() {
