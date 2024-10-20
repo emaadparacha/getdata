@@ -18,16 +18,11 @@ fn main() {
 
     // Find the number of fields in the dirfile
     let nfields = unsafe { gd_nfields(dirfile_open) };
+    println!("nfields: {:?}", nfields);
 
     // Get the field code for "period_fsc1"
     let lon_code = CString::new("lon").expect("CString::new failed");
     let lon_code_ptr = lon_code.as_ptr();
-
-    // Get the entry type for the field "period_fsc1"
-    let lon_type = unsafe { gd_entry_type(dirfile_open, lon_code_ptr) };
-
-    println!("nfields: {:?}", nfields);
-    println!("lon_type: {:?}", lon_type);
 
     // Get the number of frames in the field "lon"
     let lon_frames = unsafe { gd_nframes(dirfile_open) };
@@ -39,11 +34,11 @@ fn main() {
 
     println!("Samples per frame for lon: {:?}", samples_per_frame);
 
-    // Exit program here
-    return;
+    // Total number of samples
+    let total_samples: usize = lon_frames as usize * samples_per_frame as usize;
 
     // Allocate space for Lon data
-    let mut lon_data: Vec<f64> = vec![0.0; 100*100];
+    let mut lon_data: Vec<f64> = vec![0.0; total_samples];
 
     // Get all the data of the field "lon" and store it in the vector
     let lon_data_size = unsafe {
@@ -52,8 +47,8 @@ fn main() {
             lon_code_ptr,
             0,
             0,
-            100,
-            100,
+            lon_frames as usize,
+            total_samples,
             gd_type_t_GD_FLOAT64, // Use GD_FLOAT64 to match the f64 data type
             lon_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
         )
