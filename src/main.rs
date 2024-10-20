@@ -58,10 +58,77 @@ fn main() {
         )
     };
 
-    // Print the first 200 elements of the vector (or as many as available)
-    let to_print = lon_data.iter().take(200);
+    // Print the first 15 elements of the vector (or as many as available)
+    let to_print = lon_data.iter().take(15);
     for (i, value) in to_print.enumerate() {
         println!("lon_data[{}]: {:?}", i, value);
+    }
+
+    // Also print the middle 15 elements
+    let to_print = lon_data.iter().skip(lon_data.len() / 2).take(15);
+    for (i, value) in to_print.enumerate() {
+        println!("lon_data[{}]: {:?}", i + lon_data.len() / 2, value);
+    }
+
+    // Print the last 15 elements
+    let to_print = lon_data.iter().skip(lon_data.len() - 15);
+    for (i, value) in to_print.enumerate() {
+        println!("lon_data[{}]: {:?}", i + lon_data.len() - 15, value);
+    }
+
+    // Print the last 200 elements of "lat" data
+    let lat_code = CString::new("lat").expect("CString::new failed");
+    let lat_code_ptr = lat_code.as_ptr();
+
+    // Get the number of frames in the field "lat"
+    let lat_frames = unsafe { gd_nframes(dirfile_open) };
+
+    println!("Total frames: {:?}", lat_frames);
+
+    // Get samples per frame
+    let samples_per_frame = unsafe { gd_spf(dirfile_open, lat_code_ptr) };
+
+    println!("Samples per frame for lat: {:?}", samples_per_frame);
+
+    // Total number of samples
+    let total_samples: usize = lat_frames as usize * samples_per_frame as usize;
+
+    // Print
+    println!("Total samples: {:?}", total_samples);
+
+    // Allocate space for Lon data
+    let mut lat_data: Vec<f64> = vec![0.0; total_samples];
+
+    // Get all the data of the field "lat" and store it in the vector
+    let lat_data_size = unsafe {
+        gd_getdata(
+            dirfile_open,
+            lat_code_ptr,
+            0,
+            0,
+            lat_frames as usize,
+            samples_per_frame as usize,
+            gd_type_t_GD_FLOAT64, // Use GD_FLOAT64 to match the f64 data type
+            lat_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
+        )
+    };
+
+    // Print the first 15 elements of the vector (or as many as available)
+    let to_print = lat_data.iter().take(15);
+    for (i, value) in to_print.enumerate() {
+        println!("lat_data[{}]: {:?}", i, value);
+    }
+
+    // Also print the middle 15 elements
+    let to_print = lat_data.iter().skip(lat_data.len() / 2).take(15);
+    for (i, value) in to_print.enumerate() {
+        println!("lat_data[{}]: {:?}", i + lat_data.len() / 2, value);
+    }
+
+    // Print the last 15 elements
+    let to_print = lat_data.iter().skip(lat_data.len() - 15);
+    for (i, value) in to_print.enumerate() {
+        println!("lat_data[{}]: {:?}", i + lat_data.len() - 15, value);
     }
 
     // Print size of lon_data
