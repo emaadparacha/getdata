@@ -57,6 +57,17 @@ fn main() {
         println!("file_chunk_downlink_data[{}]: {:?}", i + file_chunk_downlink_data.len() - 15, value);
     }
 
+    // Do the same for the field "cent_est_x_fsc2"
+    let cent_est_x_fsc2_data = dirfile.get_data("cent_est_x_fsc2");
+    // Print the size
+    println!("cent_est_x_fsc2_data size: {:?}", cent_est_x_fsc2_data.len());
+
+    // Print the last 15 elements of the vector (or as many as available)
+    let to_print = cent_est_x_fsc2_data.iter().skip(cent_est_x_fsc2_data.len() - 15);
+    for (i, value) in to_print.enumerate() {
+        println!("cent_est_x_fsc2_data[{}]: {:?}", i + cent_est_x_fsc2_data.len() - 15, value);
+    }
+
     // Old Code
     // let dirfile = CString::new("/data/flights/superbit_2023/timestreams/master_2023-05-03-07-24-30")
     //     .expect("CString::new failed");
