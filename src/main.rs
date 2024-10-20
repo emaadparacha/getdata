@@ -32,7 +32,12 @@ fn main() {
     // Get the number of frames in the field "lon"
     let lon_frames = unsafe { gd_nframes(dirfile_open) };
 
-    println!("lon_frames: {:?}", lon_frames);
+    println!("Total frames: {:?}", lon_frames);
+
+    // Get samples per frame
+    let samples_per_frame = unsafe { gd_spf(dirfile_open, lon_code_ptr) };
+
+    println!("Samples per frame for lon: {:?}", samples_per_frame);
 
     // Exit program here
     return;
@@ -46,7 +51,7 @@ fn main() {
             dirfile_open,
             lon_code_ptr,
             0,
-            1,
+            0,
             100,
             100,
             gd_type_t_GD_FLOAT64, // Use GD_FLOAT64 to match the f64 data type
