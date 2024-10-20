@@ -1,6 +1,6 @@
 // getdata Bindings
 use super::getdata_bindings::*;
-use std::ffi::{CString, CStr};
+use std::ffi::CString;
 use std::any::Any;
 
 pub struct DirFile {
@@ -20,24 +20,24 @@ impl DirFile {
     }
 
     // Function to get the number of fields in the DirFile
-    pub fn nfields(&self) -> usize {
+    pub fn nfields(&self) -> u32 {
         unsafe { gd_nfields(self.dirfile_open) }
     }
 
     // Function to get the total number of frames in a DirFile
-    pub fn nframes(&self) -> usize {
+    pub fn nframes(&self) -> i64 {
         unsafe { gd_nframes(self.dirfile_open) }
     }
 
     // Function to get the samples per frame for a field in a DirFile
-    pub fn spf(&self, field: &str) -> usize {
+    pub fn spf(&self, field: &str) -> u32 {
         let field_code = CString::new(field).expect("CString::new failed");
         let field_code_ptr = field_code.as_ptr();
         unsafe { gd_spf(self.dirfile_open, field_code_ptr) }
     }
 
     // Function to get the type of a field in a DirFile
-    pub fn field_type(&self, field: &str) -> i32 {
+    pub fn field_type(&self, field: &str) -> u32 {
         let field_code = CString::new(field).expect("CString::new failed");
         let field_code_ptr = field_code.as_ptr();
         unsafe { gd_native_type(self.dirfile_open, field_code_ptr) }
@@ -48,7 +48,7 @@ impl DirFile {
         let field_type = self.field_type(field);
         let nframes = self.nframes();
         let samples_per_frame = self.spf(field);
-        let total_samples = nframes * samples_per_frame;
+        let total_samples = nframes * (samples_per_frame as i64);
 
         match field_type {
             gd_type_t_GD_UINT8 => {
