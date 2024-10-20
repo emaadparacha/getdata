@@ -1,176 +1,236 @@
 // getdata Bindings
 use getdata_bindings::*;
 use std::ffi::{CString, CStr};
-
+use std::any::Any;
 
 pub struct DirFile {
     pub dirfile_open: *mut DIRFILE,
 }
 
+impl DirFile {
 
-
-fn main() {
-
-    let dirfile = CString::new("/data/flights/superbit_2023/timestreams/master_2023-05-03-07-24-30")
-        .expect("CString::new failed");
-    let dirfile_ptr = dirfile.as_ptr();
-
-    let dirfile_open = unsafe { gd_open(dirfile_ptr, GD_RDONLY) };
-    println!("dirfile_open: {:?}", dirfile_open);
-
-    // Find the number of fields in the dirfile
-    let nfields = unsafe { gd_nfields(dirfile_open) };
-    println!("nfields: {:?}", nfields);
-
-    // Get the field code for "period_fsc1"
-    let lon_code = CString::new("lon").expect("CString::new failed");
-    let lon_code_ptr = lon_code.as_ptr();
-
-    // Get the number of frames in the field "lon"
-    let lon_frames = unsafe { gd_nframes(dirfile_open) };
-
-    println!("Total frames: {:?}", lon_frames);
-
-    // Get samples per frame
-    let samples_per_frame = unsafe { gd_spf(dirfile_open, lon_code_ptr) };
-
-    println!("Samples per frame for lon: {:?}", samples_per_frame);
-
-    // Total number of samples
-    let total_samples: usize = lon_frames as usize * samples_per_frame as usize;
-
-    // Print
-    println!("Total samples: {:?}", total_samples);
-
-    // Allocate space for Lon data
-    let mut lon_data: Vec<f64> = vec![0.0; total_samples];
-
-    // Get all the data of the field "lon" and store it in the vector
-    let lon_data_size = unsafe {
-        gd_getdata(
+    // Function to create a new DirFile instance from a path
+    pub fn new(path: &str) -> Self {
+        let dirfile = CString::new(path).expect("CString::new failed");
+        let dirfile_ptr = dirfile.as_ptr();
+        let dirfile_open = unsafe { gd_open(dirfile_ptr, GD_RDONLY) };
+        Self {
             dirfile_open,
-            lon_code_ptr,
-            0,
-            0,
-            lon_frames as usize,
-            samples_per_frame as usize,
-            gd_type_t_GD_FLOAT64, // Use GD_FLOAT64 to match the f64 data type
-            lon_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
-        )
-    };
-
-    // Print the first 15 elements of the vector (or as many as available)
-    let to_print = lon_data.iter().take(15);
-    for (i, value) in to_print.enumerate() {
-        println!("lon_data[{}]: {:?}", i, value);
-    }
-
-    // Also print the middle 15 elements
-    let to_print = lon_data.iter().skip(lon_data.len() / 2).take(15);
-    for (i, value) in to_print.enumerate() {
-        println!("lon_data[{}]: {:?}", i + lon_data.len() / 2, value);
-    }
-
-    // Print the last 15 elements
-    let to_print = lon_data.iter().skip(lon_data.len() - 15);
-    for (i, value) in to_print.enumerate() {
-        println!("lon_data[{}]: {:?}", i + lon_data.len() - 15, value);
-    }
-
-    // Print the last 200 elements of "lat" data
-    let lat_code = CString::new("lat").expect("CString::new failed");
-    let lat_code_ptr = lat_code.as_ptr();
-
-    // Get the number of frames in the field "lat"
-    let lat_frames = unsafe { gd_nframes(dirfile_open) };
-
-    println!("Total frames: {:?}", lat_frames);
-
-    // Get samples per frame
-    let samples_per_frame = unsafe { gd_spf(dirfile_open, lat_code_ptr) };
-
-    println!("Samples per frame for lat: {:?}", samples_per_frame);
-
-    // Total number of samples
-    let total_samples: usize = lat_frames as usize * samples_per_frame as usize;
-
-    // Print
-    println!("Total samples: {:?}", total_samples);
-
-    // Allocate space for Lon data
-    let mut lat_data: Vec<f64> = vec![0.0; total_samples];
-
-    // Get all the data of the field "lat" and store it in the vector
-    let lat_data_size = unsafe {
-        gd_getdata(
-            dirfile_open,
-            lat_code_ptr,
-            0,
-            0,
-            lat_frames as usize,
-            samples_per_frame as usize,
-            gd_type_t_GD_FLOAT64, // Use GD_FLOAT64 to match the f64 data type
-            lat_data.as_mut_ptr() as *mut ::std::os::raw::c_void,
-        )
-    };
-
-    // Print the first 15 elements of the vector (or as many as available)
-    let to_print = lat_data.iter().take(15);
-    for (i, value) in to_print.enumerate() {
-        println!("lat_data[{}]: {:?}", i, value);
-    }
-
-    // Also print the middle 15 elements
-    let to_print = lat_data.iter().skip(lat_data.len() / 2).take(15);
-    for (i, value) in to_print.enumerate() {
-        println!("lat_data[{}]: {:?}", i + lat_data.len() / 2, value);
-    }
-
-    // Print the last 15 elements
-    let to_print = lat_data.iter().skip(lat_data.len() - 15);
-    for (i, value) in to_print.enumerate() {
-        println!("lat_data[{}]: {:?}", i + lat_data.len() - 15, value);
-    }
-
-    // Print size of lon_data
-    println!("lon_data_size: {:?}", lon_data_size);
-
-    // Get the type of the field "lon"
-    let lon_type = unsafe { gd_native_type(dirfile_open, lon_code_ptr) };
-
-    // Print the type of the field "lon"
-    println!("lon_type: {:?}", lon_type);
-
-    // Print the value of gd_type_t_GD_FLOAT64
-    println!("gd_type_t_GD_FLOAT64: {:?}", gd_type_t_GD_FLOAT64);
-
-
-    // Also get the list of fields
-    let field_list = unsafe { gd_field_list(dirfile_open) };
-
-    // Check if the field_list is not null
-    if !field_list.is_null() {
-        let mut index = 0;
-
-        // Iterate through the list of fields
-        loop {
-            // Get the pointer to the current field
-            let field_ptr = unsafe { *field_list.add(index) };
-            if field_ptr.is_null() {
-                break; // End of the list
-            }
-
-            // Convert the C string to a Rust string
-            let field_name = unsafe { CStr::from_ptr(field_ptr) };
-            //match field_name.to_str() {
-               // Ok(name) => println!("Field {}: {}", index, name),
-               // Err(e) => eprintln!("Failed to convert field name: {}", e),
-           // }
-
-            index += 1;
         }
-    } else {
-        println!("No fields found in dirfile.");
+    }
+
+    // Function to get the number of fields in the DirFile
+    pub fn nfields(&self) -> usize {
+        unsafe { gd_nfields(self.dirfile_open) }
+    }
+
+    // Function to get the total number of frames in a DirFile
+    pub fn nframes(&self) -> usize {
+        unsafe { gd_nframes(self.dirfile_open) }
+    }
+
+    // Function to get the samples per frame for a field in a DirFile
+    pub fn spf(&self, field: &str) -> usize {
+        let field_code = CString::new(field).expect("CString::new failed");
+        let field_code_ptr = field_code.as_ptr();
+        unsafe { gd_spf(self.dirfile_open, field_code_ptr) }
+    }
+
+    // Function to get the type of a field in a DirFile
+    pub fn field_type(&self, field: &str) -> i32 {
+        let field_code = CString::new(field).expect("CString::new failed");
+        let field_code_ptr = field_code.as_ptr();
+        unsafe { gd_native_type(self.dirfile_open, field_code_ptr) }
+    }
+
+    // Function to get the data of a field in a DirFile
+    pub fn get_data(&self, field: &str) -> Vec<Box<dyn Any>> {
+        let field_type = self.field_type(field);
+        let nframes = self.nframes();
+        let samples_per_frame = self.spf(field);
+        let total_samples = nframes * samples_per_frame;
+
+        match field_type {
+            gd_type_t_GD_UINT8 => {
+                let mut data = vec![0u8; total_samples as usize];
+                unsafe {
+                    gd_getdata(
+                        self.dirfile_open,
+                        CString::new(field).unwrap().as_ptr(),
+                        0,
+                        0,
+                        nframes as usize,
+                        samples_per_frame as usize,
+                        gd_type_t_GD_UINT8,
+                        data.as_mut_ptr() as *mut ::std::os::raw::c_void,
+                    );
+                }
+                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+            }
+            gd_type_t_GD_INT8 => {
+                let mut data = vec![0i8; total_samples as usize];
+                unsafe {
+                    gd_getdata(
+                        self.dirfile_open,
+                        CString::new(field).unwrap().as_ptr(),
+                        0,
+                        0,
+                        nframes as usize,
+                        samples_per_frame as usize,
+                        gd_type_t_GD_INT8,
+                        data.as_mut_ptr() as *mut ::std::os::raw::c_void,
+                    );
+                }
+                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+            }
+            gd_type_t_GD_UINT16 => {
+                let mut data = vec![0u16; total_samples as usize];
+                unsafe {
+                    gd_getdata(
+                        self.dirfile_open,
+                        CString::new(field).unwrap().as_ptr(),
+                        0,
+                        0,
+                        nframes as usize,
+                        samples_per_frame as usize,
+                        gd_type_t_GD_UINT16,
+                        data.as_mut_ptr() as *mut ::std::os::raw::c_void,
+                    );
+                }
+                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+            }
+            gd_type_t_GD_INT16 => {
+                let mut data = vec![0i16; total_samples as usize];
+                unsafe {
+                    gd_getdata(
+                        self.dirfile_open,
+                        CString::new(field).unwrap().as_ptr(),
+                        0,
+                        0,
+                        nframes as usize,
+                        samples_per_frame as usize,
+                        gd_type_t_GD_INT16,
+                        data.as_mut_ptr() as *mut ::std::os::raw::c_void,
+                    );
+                }
+                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+            }
+            gd_type_t_GD_UINT32 => {
+                let mut data = vec![0u32; total_samples as usize];
+                unsafe {
+                    gd_getdata(
+                        self.dirfile_open,
+                        CString::new(field).unwrap().as_ptr(),
+                        0,
+                        0,
+                        nframes as usize,
+                        samples_per_frame as usize,
+                        gd_type_t_GD_UINT32,
+                        data.as_mut_ptr() as *mut ::std::os::raw::c_void,
+                    );
+                }
+                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+            }
+            gd_type_t_GD_INT32 => {
+                let mut data = vec![0i32; total_samples as usize];
+                unsafe {
+                    gd_getdata(
+                        self.dirfile_open,
+                        CString::new(field).unwrap().as_ptr(),
+                        0,
+                        0,
+                        nframes as usize,
+                        samples_per_frame as usize,
+                        gd_type_t_GD_INT32,
+                        data.as_mut_ptr() as *mut ::std::os::raw::c_void,
+                    );
+                }
+                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+            }
+            gd_type_t_GD_UINT64 => {
+                let mut data = vec![0u64; total_samples as usize];
+                unsafe {
+                    gd_getdata(
+                        self.dirfile_open,
+                        CString::new(field).unwrap().as_ptr(),
+                        0,
+                        0,
+                        nframes as usize,
+                        samples_per_frame as usize,
+                        gd_type_t_GD_UINT64,
+                        data.as_mut_ptr() as *mut ::std::os::raw::c_void,
+                    );
+                }
+                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+            }
+            gd_type_t_GD_INT64 => {
+                let mut data = vec![0i64; total_samples as usize];
+                unsafe {
+                    gd_getdata(
+                        self.dirfile_open,
+                        CString::new(field).unwrap().as_ptr(),
+                        0,
+                        0,
+                        nframes as usize,
+                        samples_per_frame as usize,
+                        gd_type_t_GD_INT64,
+                        data.as_mut_ptr() as *mut ::std::os::raw::c_void,
+                    );
+                }
+                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+            }
+            gd_type_t_GD_FLOAT32 => {
+                let mut data = vec![0.0f32; total_samples as usize];
+                unsafe {
+                    gd_getdata(
+                        self.dirfile_open,
+                        CString::new(field).unwrap().as_ptr(),
+                        0,
+                        0,
+                        nframes as usize,
+                        samples_per_frame as usize,
+                        gd_type_t_GD_FLOAT32,
+                        data.as_mut_ptr() as *mut ::std::os::raw::c_void,
+                    );
+                }
+                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+            }
+            gd_type_t_GD_FLOAT64 => {
+                let mut data = vec![0.0f64; total_samples as usize];
+                unsafe {
+                    gd_getdata(
+                        self.dirfile_open,
+                        CString::new(field).unwrap().as_ptr(),
+                        0,
+                        0,
+                        nframes as usize,
+                        samples_per_frame as usize,
+                        gd_type_t_GD_FLOAT64,
+                        data.as_mut_ptr() as *mut ::std::os::raw::c_void,
+                    );
+                }
+                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+            }
+            gd_type_t_GD_STRING => {
+                // Handle string data accordingly, may need adjustment for your specific needs
+                let mut data = vec![CString::new("").unwrap(); total_samples as usize];
+                unsafe {
+                    gd_getdata(
+                        self.dirfile_open,
+                        CString::new(field).unwrap().as_ptr(),
+                        0,
+                        0,
+                        nframes as usize,
+                        samples_per_frame as usize,
+                        gd_type_t_GD_STRING,
+                        data.as_mut_ptr() as *mut ::std::os::raw::c_void,
+                    );
+                }
+                let data: Vec<String> = data.into_iter().map(|c| c.into_string().unwrap()).collect();
+                data.into_iter().map(|v| Box::new(v) as Box<dyn Any>).collect()
+            }
+            _ => Vec::new(), // Handle unknown types
+        }
     }
 
 }
