@@ -7,6 +7,9 @@ pub struct DirFile {
     pub dirfile_open: *mut DIRFILE,
 }
 
+// Case warnings
+#![allow(non_upper_case_globals)]
+
 impl DirFile {
 
     // Function to create a new DirFile instance from a path
