@@ -5,13 +5,13 @@
 use super::getdata_bindings::*;
 use std::ffi::CString;
 
-pub struct DirFile {
+pub struct Dirfile {
     pub dirfile_open: *mut DIRFILE,
 }
 
-impl DirFile {
+impl Dirfile {
 
-    // Function to create a new DirFile instance from a path
+    // Function to create a new Dirfile instance from a path
     pub fn new(path: &str) -> Self {
         let dirfile = CString::new(path).expect("CString::new failed");
         let dirfile_ptr = dirfile.as_ptr();
@@ -21,31 +21,31 @@ impl DirFile {
         }
     }
 
-    // Function to get the number of fields in the DirFile
+    // Function to get the number of fields in the Dirfile
     pub fn nfields(&self) -> u32 {
         unsafe { gd_nfields(self.dirfile_open) }
     }
 
-    // Function to get the total number of frames in a DirFile
+    // Function to get the total number of frames in a Dirfile
     pub fn nframes(&self) -> i64 {
         unsafe { gd_nframes(self.dirfile_open) }
     }
 
-    // Function to get the samples per frame for a field in a DirFile
+    // Function to get the samples per frame for a field in a Dirfile
     pub fn spf(&self, field: &str) -> u32 {
         let field_code = CString::new(field).expect("CString::new failed");
         let field_code_ptr = field_code.as_ptr();
         unsafe { gd_spf(self.dirfile_open, field_code_ptr) }
     }
 
-    // Function to get the type of a field in a DirFile
+    // Function to get the type of a field in a Dirfile
     pub fn field_type(&self, field: &str) -> u32 {
         let field_code = CString::new(field).expect("CString::new failed");
         let field_code_ptr = field_code.as_ptr();
         unsafe { gd_native_type(self.dirfile_open, field_code_ptr) }
     }
 
-    // Function to get the data of a field in a DirFile and return as Vec<f64> 
+    // Function to get the data of a field in a Dirfile and return as Vec<f64> 
     pub fn get_data(&self, field: &str) -> Vec<f64> {
         let field_type = self.field_type(field);
         let nframes = self.nframes();

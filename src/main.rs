@@ -1,12 +1,12 @@
 // getdata library
 mod getdata;
-use getdata::DirFile;
+use getdata::Dirfile;
 mod getdata_bindings; // Declare the bindings module
 
 fn main() {
     // New Code
 
-    let dirfile = DirFile::new("/data/flights/superbit_2023/timestreams/master_2023-05-03-07-24-30");
+    let dirfile = Dirfile::new("/data/flights/superbit_2023/timestreams/master_2023-05-03-07-24-30");
 
     // Get the number of fields in the dirfile
     let nfields = dirfile.nfields();
